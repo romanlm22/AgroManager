@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: agromanager-backend
+
+  profiles:
+    active: dev
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    com.agromanager: DEBUG
