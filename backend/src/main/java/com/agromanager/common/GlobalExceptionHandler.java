@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.agromanager.farm.FarmAccessDeniedException;
+import java.util.NoSuchElementException;
 
 import java.time.Instant;
 import java.util.LinkedHashMap;
@@ -73,6 +74,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleFarmAccessDenied(
             FarmAccessDeniedException ex) {
         return buildErrorResponse(HttpStatus.FORBIDDEN, ex.getMessage());
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<Map<String, Object>> handleNotFound(NoSuchElementException ex) {
+        return buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
 }
