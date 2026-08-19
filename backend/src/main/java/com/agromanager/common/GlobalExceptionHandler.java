@@ -9,6 +9,7 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import com.agromanager.farm.FarmAccessDeniedException;
 
 import java.time.Instant;
 import java.util.LinkedHashMap;
@@ -66,6 +67,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleInvalidResetToken(
             InvalidResetTokenException ex) {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(FarmAccessDeniedException.class)
+    public ResponseEntity<Map<String, Object>> handleFarmAccessDenied(
+            FarmAccessDeniedException ex) {
+        return buildErrorResponse(HttpStatus.FORBIDDEN, ex.getMessage());
     }
 
 }
