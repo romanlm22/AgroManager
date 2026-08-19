@@ -45,7 +45,15 @@ public class PasswordResetToken {
         this.createdAt = Instant.now();
     }
 
+    public boolean isExpired() {
+        return Instant.now().isAfter(expiresAt);
+    }
+
+    public boolean isUsed() {
+        return usedAt != null;
+    }
+
     public boolean isValid() {
-        return usedAt == null && expiresAt.isAfter(Instant.now());
+        return !isExpired() && !isUsed();
     }
 }
