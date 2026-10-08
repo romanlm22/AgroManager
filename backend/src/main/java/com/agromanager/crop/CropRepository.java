@@ -11,4 +11,6 @@ public interface CropRepository extends JpaRepository<Crop, UUID> {
     List<Crop> findAllByFieldId(UUID fieldId);
 
     Optional<Crop> findByIdAndFieldId(UUID id, UUID fieldId);
+
+    List<Crop> findAllByField_Farm_Id(UUID farmId);
 }

@@ -11,4 +11,6 @@ public interface MachineryMaintenanceRepository extends JpaRepository<MachineryM
     List<MachineryMaintenance> findAllByMachineryId(UUID machineryId);
 
     Optional<MachineryMaintenance> findByIdAndMachineryId(UUID id, UUID machineryId);
+
+    List<MachineryMaintenance> findAllByMachinery_Farm_Id(UUID farmId);
 }

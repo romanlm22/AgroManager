@@ -11,4 +11,6 @@ public interface AgriculturalTaskRepository extends JpaRepository<AgriculturalTa
     List<AgriculturalTask> findAllByFieldId(UUID fieldId);
 
     Optional<AgriculturalTask> findByIdAndFieldId(UUID id, UUID fieldId);
+
+    List<AgriculturalTask> findAllByField_Farm_Id(UUID farmId);
 }

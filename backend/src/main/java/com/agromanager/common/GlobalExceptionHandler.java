@@ -10,6 +10,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.agromanager.farm.FarmAccessDeniedException;
+import com.agromanager.weather.MissingFarmCoordinatesException;
+import org.springframework.web.client.RestClientException;
+import com.agromanager.report.ReportGenerationException;
 import java.util.NoSuchElementException;
 
 import java.time.Instant;
@@ -80,5 +83,25 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleNotFound(NoSuchElementException ex) {
         return buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
     }
+
+    @ExceptionHandler(MissingFarmCoordinatesException.class)
+    public ResponseEntity<Map<String, Object>> handleMissingCoordinates(
+            MissingFarmCoordinatesException ex) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(RestClientException.class)
+    public ResponseEntity<Map<String, Object>> handleWeatherProviderError(
+            RestClientException ex) {
+        return buildErrorResponse(HttpStatus.SERVICE_UNAVAILABLE,
+                "Weather service is currently unavailable, try again later");
+    }
+
+    @ExceptionHandler(ReportGenerationException.class)
+    public ResponseEntity<Map<String, Object>> handleReportGeneration(
+            ReportGenerationException ex) {
+        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+    }
+
 
 }
