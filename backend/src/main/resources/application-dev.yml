@@ -20,3 +20,5 @@ app:
   jwt:
     secret: "1SXYbyU48muVlJnsvE6jRrUdweZTABuF93SA9NI5cRrJPTe81CD8e3Q6L39LAZBQ2euMPC1ZNQGOwHIraiGUVQ=="
     expiration-ms: 86400000
+  cors:
+    allowed-origins: http://localhost:5173  
