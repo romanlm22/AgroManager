@@ -3,11 +3,12 @@ import { useFarm } from '../hooks/useFarm'
 
 const sections = [
   { to: 'dashboard', label: 'Dashboard', ready: true },
-  { to: 'fields', label: 'Lotes', ready: true  },
-  { to: 'inventory', label: 'Inventario', ready: false },
-  { to: 'machinery', label: 'Maquinaria', ready: false },
-  { to: 'weather', label: 'Clima', ready: false },
-  { to: 'reports', label: 'Reportes', ready: false },
+  { to: 'fields', label: 'Lotes', ready: true },
+  { to: 'inventory', label: 'Inventario', ready: true },
+  { to: 'machinery', label: 'Maquinaria', ready: true },
+  { to: 'weather', label: 'Clima', ready: true },
+  { to: 'reports', label: 'Reportes', ready: true },
+  { to: 'settings', label: 'Configuración', ready: true },
 ]
 
 function FarmLayout() {

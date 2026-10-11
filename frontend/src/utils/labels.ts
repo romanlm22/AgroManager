@@ -28,3 +28,33 @@ export const fieldStatusLabels: Record<string, string> = {
   FALLOW: 'En descanso',
   INACTIVE: 'Inactivo',
 }
+
+export const cropStatusLabels: Record<string, string> = {
+  PLANTED: 'Sembrado',
+  GROWING: 'En crecimiento',
+  HARVESTED: 'Cosechado',
+  LOST: 'Perdido',
+}
+
+export const inventoryCategoryLabels: Record<string, string> = {
+  SEMILLA: 'Semilla',
+  FERTILIZANTE: 'Fertilizante',
+  HERBICIDA: 'Herbicida',
+  FUNGICIDA: 'Fungicida',
+  INSECTICIDA: 'Insecticida',
+  OTRO: 'Otro',
+}
+
+export const machineryTypeLabels: Record<string, string> = {
+  TRACTOR: 'Tractor',
+  SEMBRADORA: 'Sembradora',
+  PULVERIZADORA: 'Pulverizadora',
+  COSECHADORA: 'Cosechadora',
+  OTRA: 'Otra',
+}
+
+export const machineryStatusLabels: Record<string, string> = {
+  OPERATIVA: 'Operativa',
+  EN_MANTENIMIENTO: 'En mantenimiento',
+  FUERA_DE_SERVICIO: 'Fuera de servicio',
+}

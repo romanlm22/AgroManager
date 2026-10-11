@@ -23,8 +23,8 @@ function LoginPage() {
   } = useForm({ resolver: zodResolver(loginSchema) })
 
   if (isAuthenticated) {
-    return <Navigate to="/farms" replace />
-  }
+  return <Navigate to="/farms" replace />
+}
 
   const onSubmit = handleSubmit(async (values) => {
     setServerError(null)

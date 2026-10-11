@@ -15,3 +15,12 @@ export async function createFarm(request: FarmRequest): Promise<Farm> {
   const response = await api.post<Farm>('/api/farms', request)
   return response.data
 }
+
+export async function updateFarm(farmId: string, request: FarmRequest): Promise<Farm> {
+  const response = await api.put<Farm>(`/api/farms/${farmId}`, request)
+  return response.data
+}
+
+export async function deleteFarm(farmId: string): Promise<void> {
+  await api.delete(`/api/farms/${farmId}`)
+}

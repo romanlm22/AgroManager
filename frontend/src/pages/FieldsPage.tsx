@@ -81,7 +81,14 @@ function FieldsPage() {
             <tbody className="divide-y divide-gray-100">
               {fields.map((field) => (
                 <tr key={field.id}>
-                  <td className="px-4 py-3 font-medium text-gray-900">{field.name}</td>
+                  <td className="px-4 py-3 font-medium">
+                    <Link
+                      to={`/farms/${farmId}/fields/${field.id}`}
+                      className="text-green-700 hover:underline"
+                    >
+                      {field.name}
+                    </Link>
+                  </td>
                   <td className="px-4 py-3 text-gray-700">
                     {field.areaHa !== null ? `${formatNumber(field.areaHa)} ha` : '—'}
                   </td>
