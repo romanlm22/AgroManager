@@ -8,6 +8,7 @@ const sections = [
   { to: 'machinery', label: 'Maquinaria', ready: true },
   { to: 'weather', label: 'Clima', ready: true },
   { to: 'reports', label: 'Reportes', ready: true },
+  { to: 'assistant', label: 'Asistente', ready: true },
   { to: 'settings', label: 'Configuración', ready: true },
 ]
 

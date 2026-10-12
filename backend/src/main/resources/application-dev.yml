@@ -21,4 +21,9 @@ app:
     secret: "1SXYbyU48muVlJnsvE6jRrUdweZTABuF93SA9NI5cRrJPTe81CD8e3Q6L39LAZBQ2euMPC1ZNQGOwHIraiGUVQ=="
     expiration-ms: 86400000
   cors:
-    allowed-origins: http://localhost:5173  
+    allowed-origins: http://localhost:5173
+  ai:
+    rate-limit-per-hour: 30
+    gemini:
+      api-key: ${GEMINI_API_KEY:}
+      model: gemini-3.5-flash-lite    

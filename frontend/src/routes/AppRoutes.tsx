@@ -5,6 +5,7 @@ import FarmLayout from '../layouts/FarmLayout'
 import FieldLayout from '../layouts/FieldLayout'
 import ProtectedRoute from './ProtectedRoute'
 
+const AssistantPage = lazy(() => import('../pages/AssistantPage'))
 const CropsPage = lazy(() => import('../pages/CropsPage'))
 const DashboardPage = lazy(() => import('../pages/DashboardPage'))
 const EditCropPage = lazy(() => import('../pages/EditCropPage'))
@@ -29,6 +30,7 @@ const NewMaintenancePage = lazy(() => import('../pages/NewMaintenancePage'))
 const NewTaskPage = lazy(() => import('../pages/NewTaskPage'))
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage'))
 const TasksPage = lazy(() => import('../pages/TasksPage'))
+const RegisterPage = lazy(() => import('../pages/RegisterPage'))
 const ReportsPage = lazy(() => import('../pages/ReportsPage'))
 const WeatherPage = lazy(() => import('../pages/WeatherPage'))
 
@@ -38,6 +40,7 @@ function AppRoutes() {
       <Routes>
         <Route path="/" element={<Navigate to="/farms" replace />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
 
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
@@ -80,6 +83,7 @@ function AppRoutes() {
               />
 
               <Route path="settings" element={<EditFarmPage />} />
+              <Route path="assistant" element={<AssistantPage />} />
               <Route path="weather" element={<WeatherPage />} />
               <Route path="reports" element={<ReportsPage />} />
             </Route>

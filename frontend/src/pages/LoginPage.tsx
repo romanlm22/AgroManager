@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { isAxiosError } from 'axios'
-import { Navigate, useNavigate } from 'react-router'
+import { Link, Navigate, useNavigate } from 'react-router'
 import { z } from 'zod'
 import { useAuth } from '../hooks/useAuth'
 
@@ -23,8 +23,8 @@ function LoginPage() {
   } = useForm({ resolver: zodResolver(loginSchema) })
 
   if (isAuthenticated) {
-  return <Navigate to="/farms" replace />
-}
+    return <Navigate to="/farms" replace />
+  }
 
   const onSubmit = handleSubmit(async (values) => {
     setServerError(null)
@@ -98,6 +98,13 @@ function LoginPage() {
         >
           {isSubmitting ? 'Ingresando...' : 'Ingresar'}
         </button>
+
+        <p className="text-center text-sm text-gray-600">
+          ¿No tenés cuenta?{' '}
+          <Link to="/register" className="text-green-700 hover:underline">
+            Creá una
+          </Link>
+        </p>
       </form>
     </div>
   )
