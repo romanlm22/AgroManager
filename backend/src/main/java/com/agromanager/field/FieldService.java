@@ -31,6 +31,7 @@ public class FieldService {
                 .latitude(request.latitude())
                 .longitude(request.longitude())
                 .status(request.status())
+                .landUse(request.landUse())
                 .notes(request.notes())
                 .build();
 
@@ -70,6 +71,9 @@ public class FieldService {
         field.setLongitude(request.longitude());
         if (request.status() != null) {
             field.setStatus(request.status());
+        }
+        if (request.landUse() != null) {
+            field.setLandUse(request.landUse());
         }
         field.setNotes(request.notes());
 

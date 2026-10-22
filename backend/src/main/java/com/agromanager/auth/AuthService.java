@@ -1,5 +1,6 @@
 package com.agromanager.auth;
 
+import com.agromanager.user.Role;
 import com.agromanager.user.User;
 import com.agromanager.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,8 @@ import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
+import java.util.EnumSet;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -21,6 +24,10 @@ import java.util.Base64;
 public class AuthService {
 
     private static final int RESET_TOKEN_VALIDITY_MINUTES = 15;
+
+    /** Roles que una persona puede elegir al registrarse; ADMIN solo se asigna por fuera de la app. */
+    private static final Set<Role> SELF_REGISTRATION_ROLES =
+            EnumSet.of(Role.PRODUCER, Role.AGRONOMIST, Role.EMPLOYEE);
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -30,6 +37,10 @@ public class AuthService {
 
     @Transactional
     public AuthResponse register(RegisterRequest request) {
+        if (!SELF_REGISTRATION_ROLES.contains(request.role())) {
+            throw new RoleNotAllowedException(request.role());
+        }
+
         String normalizedEmail = request.email().trim().toLowerCase();
 
         if (userRepository.existsByEmail(normalizedEmail)) {

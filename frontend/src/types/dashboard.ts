@@ -39,6 +39,57 @@ export interface DashboardMachinery {
   nextMaintenanceDate: string | null
 }
 
+export interface LivestockCategoryCount {
+  category: string
+  headCount: number
+}
+
+export interface LivestockDueBirth {
+  animalId: string
+  tagNumber: string
+  estimatedDueDate: string
+  daysToDue: number
+}
+
+export interface LivestockDueDose {
+  eventId: string
+  targetName: string
+  herdTarget: boolean
+  product: string
+  nextDoseDate: string
+  overdue: boolean
+}
+
+export interface LivestockProductionTotal {
+  productType: string
+  unit: string
+  quantity: number
+  income: number
+}
+
+export interface LivestockMonthlyIncome {
+  month: string
+  income: number
+}
+
+export interface LivestockSummary {
+  totalHeadCount: number
+  trackedAnimals: number
+  herdCount: number
+  headByCategory: LivestockCategoryCount[]
+  pregnantCount: number
+  dueBirthsTotal: number
+  dueBirths: LivestockDueBirth[]
+  dueDosesTotal: number
+  dueDoses: LivestockDueDose[]
+  averageDailyGainKg: number | null
+  animalsWithGain: number
+  totalHealthCost: number
+  currentMonthProduction: LivestockProductionTotal[]
+  currentMonthIncome: number
+  monthlyIncome: LivestockMonthlyIncome[]
+}
+
 export interface Dashboard {
   farmId: string
   totalAreaHa: number | null
@@ -52,4 +103,5 @@ export interface Dashboard {
   upcomingTasks: DashboardTask[]
   machineryDueForMaintenance: DashboardMachinery[]
   weather: Weather | null
+  livestock: LivestockSummary
 }

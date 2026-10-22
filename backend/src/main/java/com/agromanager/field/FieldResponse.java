@@ -13,6 +13,7 @@ public record FieldResponse(
         BigDecimal latitude,
         BigDecimal longitude,
         FieldStatus status,
+        LandUse landUse,
         String notes,
         Instant createdAt,
         Instant updatedAt
@@ -27,6 +28,7 @@ public record FieldResponse(
                 field.getLatitude(),
                 field.getLongitude(),
                 field.getStatus(),
+                field.getLandUse(),
                 field.getNotes(),
                 field.getCreatedAt(),
                 field.getUpdatedAt()

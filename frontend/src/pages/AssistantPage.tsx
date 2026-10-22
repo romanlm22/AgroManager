@@ -11,6 +11,8 @@ const suggestions = [
   '¿Qué insumos tengo con poco stock o por vencer?',
   '¿Qué maquinaria necesita mantenimiento pronto?',
   '¿Conviene pulverizar en los próximos días según el clima?',
+  '¿Qué vacunaciones tengo vencidas o por vencer en la hacienda?',
+  '¿Qué vacas están por parir en el próximo mes?',
 ]
 
 function errorMessageFor(error: unknown): string {

@@ -41,6 +41,32 @@ function ReportsPage() {
           withDateRange
         />
       </div>
+
+      <h2 className="mt-10 text-lg font-semibold text-gray-900">Ganadería</h2>
+
+      <div className="mt-4 grid gap-6 md:grid-cols-2">
+        <ReportCard
+          farmId={farmId}
+          type="livestock-stock"
+          title="Stock ganadero"
+          description="Cabezas por categoría, rodeos y animales activos con su ubicación."
+          withDateRange={false}
+        />
+        <ReportCard
+          farmId={farmId}
+          type="livestock-health"
+          title="Sanidad"
+          description="Vacunaciones, desparasitaciones y tratamientos, con su costo."
+          withDateRange
+        />
+        <ReportCard
+          farmId={farmId}
+          type="livestock-production"
+          title="Producción ganadera"
+          description="Leche, carne, lana y otros productos, con totales e ingresos."
+          withDateRange
+        />
+      </div>
     </div>
   )
 }

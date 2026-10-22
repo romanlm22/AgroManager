@@ -6,7 +6,7 @@ import FormField from '../../components/FormField'
 import { inputClassName } from '../../components/formStyles'
 import type { Field, FieldRequest } from '../../types/field'
 import { optionalNumber, toNumber, toText } from '../../utils/formValues'
-import { fieldStatusLabels } from '../../utils/labels'
+import { fieldStatusLabels, landUseLabels } from '../../utils/labels'
 
 const fieldSchema = z.object({
   name: z
@@ -19,6 +19,7 @@ const fieldSchema = z.object({
   latitude: optionalNumber('La latitud debe estar entre -90 y 90', -90, 90),
   longitude: optionalNumber('La longitud debe estar entre -180 y 180', -180, 180),
   status: z.enum(['ACTIVE', 'FALLOW', 'INACTIVE']),
+  landUse: z.enum(['AGRICULTURA', 'GANADERIA', 'MIXTO']),
   notes: z.string(),
 })
 
@@ -52,6 +53,7 @@ function FieldForm({
       latitude: initialField?.latitude?.toString() ?? '',
       longitude: initialField?.longitude?.toString() ?? '',
       status: initialField?.status ?? 'ACTIVE',
+      landUse: initialField?.landUse ?? 'AGRICULTURA',
       notes: initialField?.notes ?? '',
     },
   })
@@ -64,6 +66,7 @@ function FieldForm({
       latitude: toNumber(values.latitude),
       longitude: toNumber(values.longitude),
       status: values.status,
+      landUse: values.landUse,
       notes: toText(values.notes),
     })
   })
@@ -109,6 +112,21 @@ function FieldForm({
           </select>
         </FormField>
       </div>
+
+      <FormField
+        label="Uso del lote"
+        htmlFor="landUse"
+        error={errors.landUse?.message}
+        hint="Los lotes de ganadería o mixtos se pueden elegir como potrero en la sección Ganadería."
+      >
+        <select id="landUse" {...register('landUse')} className={inputClassName}>
+          {Object.entries(landUseLabels).map(([value, label]) => (
+            <option key={value} value={value}>
+              {label}
+            </option>
+          ))}
+        </select>
+      </FormField>
 
       <FormField
         label="Tipo de suelo (opcional)"

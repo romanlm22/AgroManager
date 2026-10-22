@@ -25,6 +25,7 @@ public class ReportController {
     private final InventoryReportService inventoryReportService;
     private final ProductionReportService productionReportService;
     private final ExpenseReportService expenseReportService;
+    private final LivestockReportService livestockReportService;
 
     @GetMapping(value = "/tasks/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<byte[]> getTaskReportPdf(
@@ -74,6 +75,42 @@ public class ReportController {
                 farmId, startDate, endDate, userDetails.getUser());
 
         return pdfResponse(pdfBytes, "reporte-gastos-" + farmId + ".pdf");
+    }
+
+    @GetMapping(value = "/livestock-stock/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<byte[]> getLivestockStockReportPdf(
+            @PathVariable UUID farmId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        byte[] pdfBytes = livestockReportService.generateStockReportPdf(farmId, userDetails.getUser());
+
+        return pdfResponse(pdfBytes, "reporte-stock-ganadero-" + farmId + ".pdf");
+    }
+
+    @GetMapping(value = "/livestock-health/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<byte[]> getLivestockHealthReportPdf(
+            @PathVariable UUID farmId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        byte[] pdfBytes = livestockReportService.generateHealthReportPdf(
+                farmId, startDate, endDate, userDetails.getUser());
+
+        return pdfResponse(pdfBytes, "reporte-sanitario-" + farmId + ".pdf");
+    }
+
+    @GetMapping(value = "/livestock-production/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<byte[]> getLivestockProductionReportPdf(
+            @PathVariable UUID farmId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        byte[] pdfBytes = livestockReportService.generateProductionReportPdf(
+                farmId, startDate, endDate, userDetails.getUser());
+
+        return pdfResponse(pdfBytes, "reporte-produccion-ganadera-" + farmId + ".pdf");
     }
 
     private ResponseEntity<byte[]> pdfResponse(byte[] pdfBytes, String filename) {

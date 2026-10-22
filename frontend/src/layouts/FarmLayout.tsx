@@ -4,6 +4,7 @@ import { useFarm } from '../hooks/useFarm'
 const sections = [
   { to: 'dashboard', label: 'Dashboard', ready: true },
   { to: 'fields', label: 'Lotes', ready: true },
+  { to: 'livestock', label: 'Ganadería', ready: true },
   { to: 'inventory', label: 'Inventario', ready: true },
   { to: 'machinery', label: 'Maquinaria', ready: true },
   { to: 'weather', label: 'Clima', ready: true },

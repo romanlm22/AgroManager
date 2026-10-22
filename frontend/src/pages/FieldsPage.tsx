@@ -5,7 +5,7 @@ import { useFields } from '../hooks/useFields'
 import { useDeleteField } from '../hooks/useFieldMutations'
 import type { Field } from '../types/field'
 import { formatNumber } from '../utils/format'
-import { fieldStatusLabels } from '../utils/labels'
+import { fieldStatusLabels, landUseLabels } from '../utils/labels'
 
 const statusStyles: Record<string, string> = {
   ACTIVE: 'bg-green-100 text-green-800',
@@ -73,6 +73,7 @@ function FieldsPage() {
               <tr>
                 <th className="px-4 py-3 font-medium">Nombre</th>
                 <th className="px-4 py-3 font-medium">Superficie</th>
+                <th className="px-4 py-3 font-medium">Uso</th>
                 <th className="px-4 py-3 font-medium">Suelo</th>
                 <th className="px-4 py-3 font-medium">Estado</th>
                 <th className="px-4 py-3 text-right font-medium">Acciones</th>
@@ -91,6 +92,9 @@ function FieldsPage() {
                   </td>
                   <td className="px-4 py-3 text-gray-700">
                     {field.areaHa !== null ? `${formatNumber(field.areaHa)} ha` : '—'}
+                  </td>
+                  <td className="px-4 py-3 text-gray-700">
+                    {landUseLabels[field.landUse] ?? field.landUse}
                   </td>
                   <td className="px-4 py-3 text-gray-700">{field.soilType ?? '—'}</td>
                   <td className="px-4 py-3">

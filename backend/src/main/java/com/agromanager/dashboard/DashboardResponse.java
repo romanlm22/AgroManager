@@ -1,6 +1,7 @@
 package com.agromanager.dashboard;
 
 import com.agromanager.inventory.InventoryItemResponse;
+import com.agromanager.livestock.LivestockSummaryResponse;
 import com.agromanager.machinery.MachineryResponse;
 import com.agromanager.task.TaskResponse;
 import com.agromanager.weather.WeatherResponse;
@@ -21,5 +22,6 @@ public record DashboardResponse(
         List<InventoryItemResponse> expiringSoonItems,
         List<TaskResponse> upcomingTasks,
         List<MachineryResponse> machineryDueForMaintenance,
-        WeatherResponse weather
+        WeatherResponse weather,
+        LivestockSummaryResponse livestock
 ) {}

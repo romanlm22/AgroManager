@@ -48,6 +48,10 @@ public class Field {
     @Column(nullable = false, length = 20)
     private FieldStatus status;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "land_use", nullable = false, length = 20)
+    private LandUse landUse;
+
     @Column(columnDefinition = "TEXT")
     private String notes;
 
@@ -64,6 +68,9 @@ public class Field {
         this.updatedAt = now;
         if (this.status == null) {
             this.status = FieldStatus.ACTIVE;
+        }
+        if (this.landUse == null) {
+            this.landUse = LandUse.AGRICULTURA;
         }
     }
 

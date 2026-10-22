@@ -23,5 +23,7 @@ public record FieldRequest(
 
         FieldStatus status,
 
+        LandUse landUse,
+
         String notes
 ) {}

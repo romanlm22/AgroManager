@@ -11,6 +11,7 @@ import com.agromanager.field.FieldRepository;
 import com.agromanager.inventory.InventoryItem;
 import com.agromanager.inventory.InventoryItemRepository;
 import com.agromanager.inventory.InventoryItemResponse;
+import com.agromanager.livestock.LivestockSummaryService;
 import com.agromanager.machinery.Machinery;
 import com.agromanager.machinery.MachineryMaintenance;
 import com.agromanager.machinery.MachineryMaintenanceRepository;
@@ -55,6 +56,7 @@ public class DashboardService {
     private final MachineryRepository machineryRepository;
     private final MachineryMaintenanceRepository maintenanceRepository;
     private final WeatherClient weatherClient;
+    private final LivestockSummaryService livestockSummaryService;
 
     public DashboardResponse getDashboard(UUID farmId, User currentUser) {
         Farm farm = getAuthorizedFarm(farmId, currentUser);
@@ -124,7 +126,8 @@ public class DashboardService {
                 expiringSoonItems,
                 upcomingTasks,
                 machineryDueForMaintenance,
-                weather
+                weather,
+                livestockSummaryService.build(farmId)
         );
     }
 

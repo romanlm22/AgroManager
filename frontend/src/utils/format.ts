@@ -9,6 +9,14 @@ export function formatShortDay(iso: string): string {
   })
 }
 
+/** "2026-10" -> "oct 2026". */
+export function formatMonth(yearMonth: string): string {
+  return new Date(`${yearMonth}-01T00:00:00`).toLocaleDateString('es-AR', {
+    month: 'short',
+    year: 'numeric',
+  })
+}
+
 export function formatNumber(value: number): string {
   return value.toLocaleString('es-AR')
 }

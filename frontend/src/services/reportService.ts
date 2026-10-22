@@ -1,6 +1,13 @@
 import { api } from './api'
 
-export type ReportType = 'tasks' | 'inventory' | 'production' | 'expenses'
+export type ReportType =
+  | 'tasks'
+  | 'inventory'
+  | 'production'
+  | 'expenses'
+  | 'livestock-stock'
+  | 'livestock-health'
+  | 'livestock-production'
 
 export interface ReportFile {
   blob: Blob

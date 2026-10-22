@@ -1,6 +1,7 @@
 import { useParams } from 'react-router'
 import AlertsCard from '../features/dashboard/AlertsCard'
 import StatCard from '../features/dashboard/StatCard'
+import LivestockSection from '../features/dashboard/LivestockSection'
 import UpcomingTasksCard from '../features/dashboard/UpcomingTasksCard'
 import WeatherCard from '../features/dashboard/WeatherCard'
 import { useDashboard } from '../hooks/useDashboard'
@@ -63,6 +64,8 @@ function DashboardPage() {
             />
             <UpcomingTasksCard tasks={data.upcomingTasks} />
           </div>
+
+          <LivestockSection livestock={data.livestock} farmId={farmId ?? ''} />
 
           <WeatherCard weather={data.weather} />
         </div>

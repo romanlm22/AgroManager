@@ -8,6 +8,15 @@ import com.agromanager.field.Field;
 import com.agromanager.field.FieldRepository;
 import com.agromanager.inventory.InventoryItem;
 import com.agromanager.inventory.InventoryItemRepository;
+import com.agromanager.livestock.AnimalHealthEvent;
+import com.agromanager.livestock.AnimalHealthEventRepository;
+import com.agromanager.livestock.AnimalRepository;
+import com.agromanager.livestock.AnimalStatus;
+import com.agromanager.livestock.Herd;
+import com.agromanager.livestock.HerdAnimalCount;
+import com.agromanager.livestock.HerdRepository;
+import com.agromanager.livestock.LivestockSummaryResponse;
+import com.agromanager.livestock.LivestockSummaryService;
 import com.agromanager.machinery.Machinery;
 import com.agromanager.machinery.MachineryMaintenance;
 import com.agromanager.machinery.MachineryMaintenanceRepository;
@@ -25,7 +34,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -44,6 +55,8 @@ public class AiContextBuilder {
     private static final int MAX_TASKS = 60;
     private static final int MAX_INVENTORY_ITEMS = 100;
     private static final int MAX_MAINTENANCES = 30;
+    private static final int MAX_HERDS = 50;
+    private static final int MAX_HEALTH_EVENTS = 20;
 
     private final FarmRepository farmRepository;
     private final FieldRepository fieldRepository;
@@ -53,6 +66,10 @@ public class AiContextBuilder {
     private final MachineryRepository machineryRepository;
     private final MachineryMaintenanceRepository maintenanceRepository;
     private final WeatherClient weatherClient;
+    private final HerdRepository herdRepository;
+    private final AnimalRepository animalRepository;
+    private final AnimalHealthEventRepository healthEventRepository;
+    private final LivestockSummaryService livestockSummaryService;
 
     @Transactional(readOnly = true)
     public String build(UUID farmId) {
@@ -73,6 +90,7 @@ public class AiContextBuilder {
         appendTasks(sb, farmId);
         appendInventory(sb, farmId);
         appendMachinery(sb, farmId);
+        appendLivestock(sb, farmId);
         appendWeather(sb, farm);
 
         return sb.toString();
@@ -87,6 +105,7 @@ public class AiContextBuilder {
                     .append(" | ha: ").append(text(field.getAreaHa()))
                     .append(" | suelo: ").append(text(field.getSoilType()))
                     .append(" | estado: ").append(text(field.getStatus()))
+                    .append(" | uso: ").append(text(field.getLandUse()))
                     .append("\n");
         }
         sb.append("\n");
@@ -183,6 +202,114 @@ public class AiContextBuilder {
                     .append(" | máquina: ").append(maintenance.getMachinery().getName())
                     .append(" | descripción: ").append(text(maintenance.getDescription()))
                     .append(" | costo: ").append(text(maintenance.getCost()))
+                    .append("\n");
+        }
+        sb.append("\n");
+    }
+
+    /**
+     * La hacienda se resume con cifras agregadas (el detalle animal por animal haría crecer
+     * el contexto sin límite): cabezas, rodeos, reproducción, sanidad y producción.
+     */
+    private void appendLivestock(StringBuilder sb, UUID farmId) {
+        LivestockSummaryResponse summary = livestockSummaryService.build(farmId);
+
+        sb.append("GANADERÍA (cabezas = fichas individuales activas + conteo manual de los rodeos sin fichas):\n");
+
+        if (summary.totalHeadCount() == 0 && summary.herdCount() == 0) {
+            sb.append("- No hay hacienda cargada.\n\n");
+            return;
+        }
+
+        sb.append("- cabezas totales: ").append(summary.totalHeadCount())
+                .append(" | animales con ficha: ").append(summary.trackedAnimals())
+                .append(" | rodeos: ").append(summary.herdCount()).append("\n");
+
+        sb.append("- cabezas por categoría:");
+        for (LivestockSummaryResponse.CategoryCount count : summary.headByCategory()) {
+            sb.append(" ").append(count.category()).append(" ").append(count.headCount()).append(";");
+        }
+        sb.append("\n\n");
+
+        appendHerds(sb, farmId);
+
+        sb.append("REPRODUCCIÓN (gestación estimada en 283 días desde el último servicio):\n");
+        sb.append("- hembras preñadas: ").append(summary.pregnantCount())
+                .append(" | partos estimados en los próximos 30 días o ya vencidos: ")
+                .append(summary.dueBirthsTotal()).append("\n");
+        for (LivestockSummaryResponse.DueBirth birth : summary.dueBirths()) {
+            sb.append("- caravana ").append(birth.tagNumber())
+                    .append(" | parto estimado: ").append(birth.estimatedDueDate())
+                    .append(" | días restantes: ").append(birth.daysToDue()).append("\n");
+        }
+        sb.append("\n");
+
+        sb.append("SANIDAD (próximas dosis vencidas o dentro de 7 días: ")
+                .append(summary.dueDosesTotal()).append("):\n");
+        for (LivestockSummaryResponse.DueDose dose : summary.dueDoses()) {
+            sb.append("- ").append(dose.herdTarget() ? "rodeo " : "caravana ").append(dose.targetName())
+                    .append(" | producto: ").append(dose.product())
+                    .append(" | próxima dosis: ").append(dose.nextDoseDate())
+                    .append(dose.overdue() ? " | VENCIDA" : "").append("\n");
+        }
+        sb.append("- costo sanitario acumulado (ARS): ").append(summary.totalHealthCost()).append("\n\n");
+
+        appendRecentHealthEvents(sb, farmId);
+
+        sb.append("DESEMPEÑO Y PRODUCCIÓN GANADERA:\n");
+        sb.append("- ganancia diaria de peso (GDP) promedio, último intervalo de pesaje: ")
+                .append(text(summary.averageDailyGainKg())).append(" kg/día (")
+                .append(summary.animalsWithGain()).append(" animales con 2 o más pesajes)\n");
+        sb.append("- producción del mes en curso:");
+        if (summary.currentMonthProduction().isEmpty()) {
+            sb.append(" sin registros");
+        }
+        for (LivestockSummaryResponse.ProductionTotal total : summary.currentMonthProduction()) {
+            sb.append(" ").append(total.productType()).append(" ").append(total.quantity())
+                    .append(" ").append(total.unit()).append(" (ingreso ARS ").append(total.income()).append(");");
+        }
+        sb.append("\n- ingresos por producción ganadera, últimos meses (ARS):");
+        for (LivestockSummaryResponse.MonthlyIncome income : summary.monthlyIncome()) {
+            sb.append(" ").append(income.month()).append(": ").append(income.income()).append(";");
+        }
+        sb.append("\n\n");
+    }
+
+    private void appendHerds(StringBuilder sb, UUID farmId) {
+        Map<UUID, Long> trackedByHerd = new HashMap<>();
+        for (HerdAnimalCount count : animalRepository.countByHerd(farmId, AnimalStatus.ACTIVO)) {
+            trackedByHerd.put(count.getHerdId(), count.getTotal());
+        }
+
+        sb.append("RODEOS:\n");
+        for (Herd herd : herdRepository.findAllByFarmIdOrderByNameAsc(farmId).stream().limit(MAX_HERDS).toList()) {
+            long tracked = trackedByHerd.getOrDefault(herd.getId(), 0L);
+            sb.append("- ").append(herd.getName())
+                    .append(" | categoría: ").append(text(herd.getCategory()))
+                    .append(" | potrero: ").append(herd.getField() != null ? herd.getField().getName() : "—")
+                    .append(" | cabezas: ").append(tracked > 0 ? tracked : herd.getManualHeadCount())
+                    .append(tracked > 0 ? " (por fichas)" : " (conteo manual)")
+                    .append("\n");
+        }
+        sb.append("\n");
+    }
+
+    private void appendRecentHealthEvents(StringBuilder sb, UUID farmId) {
+        List<AnimalHealthEvent> events = healthEventRepository
+                .findAllByFarmIdOrderByEventDateDescCreatedAtDesc(farmId).stream()
+                .limit(MAX_HEALTH_EVENTS)
+                .toList();
+
+        sb.append("ÚLTIMOS EVENTOS SANITARIOS (más recientes primero):\n");
+        for (AnimalHealthEvent event : events) {
+            sb.append("- ").append(text(event.getEventDate()))
+                    .append(" | ").append(text(event.getEventType()))
+                    .append(" | ").append(event.getAnimal() != null
+                            ? "caravana " + event.getAnimal().getTagNumber()
+                            : "rodeo " + event.getHerd().getName())
+                    .append(" | producto: ").append(event.getProduct())
+                    .append(" | dosis: ").append(text(event.getDose()))
+                    .append(" | próxima dosis: ").append(text(event.getNextDoseDate()))
                     .append("\n");
         }
         sb.append("\n");
